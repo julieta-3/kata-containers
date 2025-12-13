@@ -36,6 +36,10 @@ pub struct LogMessage {
     #[serde_as(as = "DisplayFromStr")]
     #[serde(rename = "ts")]
     pub timestamp: DateTime<Utc>,
+
+    #[serde(skip_serializing)]
+    pub embedded_payload: Option<String>,
+
 }
 
 impl AnyLogMessage for LogMessage {
@@ -75,6 +79,9 @@ pub struct StrictLogMessage {
     #[serde_as(as = "DisplayFromStr")]
     #[serde(rename = "ts")]
     pub timestamp: DateTime<Utc>,
+
+    #[serde(skip_serializing)]
+    pub embedded_payload: Option<String>,
 }
 
 impl AnyLogMessage for StrictLogMessage {
@@ -133,6 +140,26 @@ impl FromStr for LogLevel {
         Ok(LogLevel(level))
     }
 }
+
+impl LogMessage {
+    pub fn split_message(&mut self, max_len: usize) {
+        if self.message.len() > max_len {
+            self.embedded_payload = Some(self.message.split_off(max_len));
+        }
+    }
+}
+
+impl StrictLogMessage {
+    pub fn split_message(&mut self, max_len: usize) {
+        if self.message.len() > max_len {
+            self.embedded_payload = Some(self.message.split_off(max_len));
+        }
+    }
+}
+
+
+
+
 
 //TODO: add tests for serialization.
 #[cfg(test)]

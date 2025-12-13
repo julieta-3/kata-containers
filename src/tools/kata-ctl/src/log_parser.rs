@@ -56,3 +56,28 @@ pub fn log_parser(args: LogParser) -> anyhow::Result<()> {
     }
     .context("Could not parse logs")
 }
+
+
+pub fn split_msg(msg: &str) -> (String, Option<String>) {
+    // Look for a Rust-like struct pattern: identifier { ... } or identifier([...])
+    let patterns = ["{", "["]; // Start of structured payload
+    let mut earliest_index = msg.len();
+    let mut found = None;
+
+    for p in patterns.iter() {
+        if let Some(idx) = msg.find(p) {
+            if idx < earliest_index {
+                earliest_index = idx;
+                found = Some(idx);
+            }
+        }
+    }
+
+    if let Some(idx) = found {
+        let human = msg[..idx].trim().to_string();
+        let payload = msg[idx..].trim().to_string();
+        (human, Some(payload))
+    } else {
+        (msg.trim().to_string(), None)
+    }
+}
