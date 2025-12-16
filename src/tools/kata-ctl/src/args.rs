@@ -254,6 +254,12 @@ pub struct LogParser {
 
     #[arg(long, value_enum, default_value_t = LogOutputFormat::Json, help="set the output format")]
     pub output_format: LogOutputFormat,
+
+    #[arg(
+        long,
+        help = "attempt to parse structured data (Rust debug format) in msg field"
+    )]
+    pub try_parse_structured: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]

@@ -36,6 +36,9 @@ pub struct LogMessage {
     #[serde_as(as = "DisplayFromStr")]
     #[serde(rename = "ts")]
     pub timestamp: DateTime<Utc>,
+
+    #[serde(skip_deserializing)]
+    pub msg_struct: Option<serde_json::Value>,
 }
 
 impl AnyLogMessage for LogMessage {
@@ -75,6 +78,9 @@ pub struct StrictLogMessage {
     #[serde_as(as = "DisplayFromStr")]
     #[serde(rename = "ts")]
     pub timestamp: DateTime<Utc>,
+
+    #[serde(skip_deserializing)]
+    pub msg_struct: Option<serde_json::Value>,
 }
 
 impl AnyLogMessage for StrictLogMessage {
